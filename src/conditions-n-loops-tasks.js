@@ -297,8 +297,25 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let totalSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    totalSum += arr[i];
+  }
+
+  let leftSum = 0;
+
+  for (let i = 0; i < arr.length; i += 1) {
+    const rightSum = totalSum - leftSum - arr[i];
+
+    if (leftSum === rightSum) {
+      return i;
+    }
+
+    leftSum += arr[i];
+  }
+
+  return -1;
 }
 
 /**
@@ -322,8 +339,48 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const spiral = [];
+  for (let i = 0; i < size; i += 1) {
+    spiral[i] = [];
+    for (let j = 0; j < size; j += 1) {
+      spiral[i][j] = 0;
+    }
+  }
+
+  let num = 1;
+  let startRow = 0;
+  let endRow = size - 1;
+  let startCol = 0;
+  let endCol = size - 1;
+
+  while (startRow <= endRow && startCol <= endCol) {
+    for (let i = startCol; i <= endCol; i += 1) {
+      spiral[startRow][i] = num;
+      num += 1;
+    }
+    startRow += 1;
+
+    for (let i = startRow; i <= endRow; i += 1) {
+      spiral[i][endCol] = num;
+      num += 1;
+    }
+    endCol -= 1;
+
+    for (let i = endCol; i >= startCol; i -= 1) {
+      spiral[endRow][i] = num;
+      num += 1;
+    }
+    endRow -= 1;
+
+    for (let i = endRow; i >= startRow; i -= 1) {
+      spiral[i][startCol] = num;
+      num += 1;
+    }
+    startCol += 1;
+  }
+
+  return spiral;
 }
 
 /**
@@ -341,8 +398,34 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+/**
+ * Rotates a matrix by 90 degrees clockwise in place.
+ * Take into account that the matrix size can be very large. Consider how you can optimize your solution.
+ * Usage of String and Array class methods is not allowed in this task.
+ *
+ * @param {number[][]} matrix - The matrix to rotate.
+ * @return {number[][]} The rotated matrix.
+ *
+ * @example:
+ *  [                 [
+ *    [1, 2, 3],        [7, 4, 1],
+ *    [4, 5, 6],  =>    [8, 5, 2],
+ *    [7, 8, 9]         [9, 6, 3]
+ *  ]                 ]
+ */
+function rotateMatrix(matrix) {
+  const dupl = matrix;
+  const size = dupl.length;
+  for (let i = 0; i < size / 2; i += 1) {
+    for (let j = i; j < size - i - 1; j += 1) {
+      const temp = dupl[i][j];
+      dupl[i][j] = dupl[size - 1 - j][i];
+      dupl[size - 1 - j][i] = dupl[size - 1 - i][size - 1 - j];
+      dupl[size - 1 - i][size - 1 - j] = dupl[j][size - 1 - i];
+      dupl[j][size - 1 - i] = temp;
+    }
+  }
+  return dupl;
 }
 
 /**
@@ -359,8 +442,39 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const array = arr;
+
+  function QuickSort(elements) {
+    if (elements.length <= 1) {
+      return elements;
+    }
+    const pivotElement = elements[elements.length - 1];
+    const leftSubarray = [];
+    const rightSubarray = [];
+    for (let i = 0; i < elements.length - 1; i += 1) {
+      if (elements[i] < pivotElement) {
+        leftSubarray[leftSubarray.length] = elements[i];
+      } else {
+        rightSubarray[rightSubarray.length] = elements[i];
+      }
+    }
+    const result = [];
+    const leftSorted = QuickSort(leftSubarray);
+    const rightSorted = QuickSort(rightSubarray);
+    for (let i = 0; i < leftSorted.length; i += 1) {
+      result[result.length] = leftSorted[i];
+    }
+    result[result.length] = pivotElement;
+    for (let i = 0; i < rightSorted.length; i += 1) {
+      result[result.length] = rightSorted[i];
+    }
+    return result;
+  }
+  const sortedArray = QuickSort(arr);
+  for (let i = 0; i < array.length; i += 1) {
+    array[i] = sortedArray[i];
+  }
 }
 
 /**
@@ -380,8 +494,30 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let evenChars = '';
+  let oddChars = '';
+  let currentLine = str;
+  let remainingIterations = iterations;
+
+  while (remainingIterations > 0) {
+    for (let i = 0; i < str.length; i += 1) {
+      if (i % 2 === 0) {
+        evenChars += currentLine[i];
+      } else {
+        oddChars += currentLine[i];
+      }
+    }
+    currentLine = evenChars + oddChars;
+    if (currentLine === str) {
+      remainingIterations = iterations % (iterations - remainingIterations + 1);
+    } else {
+      remainingIterations -= 1;
+    }
+    evenChars = '';
+    oddChars = '';
+  }
+  return currentLine;
 }
 
 /**
